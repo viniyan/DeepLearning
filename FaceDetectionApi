@@ -18,6 +18,7 @@ with app.app_context():
 
         req = requests.get(link)
         #reqCam = requests.get(linkCamera)
+        print(req.status_code)
         imagemTreino = pyautogui.screenshot()
 
 
