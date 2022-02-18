@@ -1,11 +1,3 @@
-from flask import Flask, jsonify
-import numpy as np
-import cv2
-import matplotlib.pyplot as plt
-import time
-import requests
-import pyautogui
-
 app = Flask(__name__)
 
 
@@ -21,17 +13,21 @@ def openCamera(link):
 
 @app.route("/detect")
 def detectFaces(arquivoTreino, imagemTreino,  scaleFactor=1.1):
-    arq = cv2.CascadeClassifier(arquivoTreino)
-    img_copy = np.copy(imagemTreino)
-    gray = cv2.cvtColor(img_copy,cv2.COLOR_BGR2GRAY)     #every image has to be gray for openCv
+    cv2_base_dir = os.path.dirname(os.path.abspath(cv2.__file__))
+    haar_model = os.path.join(cv2_base_dir, 'data/haarcascade_frontalface_default.xml')
 
-    plt.imshow(gray, cmap='gray') #show the image
+    arq = cv2.CascadeClassifier(haar_model)
+    img_copy = cv2.imread(imagemTreino)
+    cv2.imshow('Original',img_copy)
+    gray = cv2.cvtColor(img_copy, cv2.COLOR_BGR2GRAY)    #every image has to be gray for openCv
 
-    faces = arq.DetectMultiScale(gray, scaleFactor = 1.1, minNeighbors = 5)
+    plt.imshow(gray, cmap='gray')   #show the image
+
+    faces = arq.detectMultiScale(gray, scaleFactor = 1.1, minNeighbors = 5)
     print('Faces found: ', len(faces))
 
     for (x, y, w, h) in faces:
-        cv2.retangle(img_copy, (x,y),(x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(img_copy, (x,y),(x + w, y + h), (0, 255, 0), 2)
         if len(faces) < 30:      #if there should be 30 students
             presNum = int(len(faces))
             presPct = presNum *100/30
@@ -47,5 +43,7 @@ def detectFaces(arquivoTreino, imagemTreino,  scaleFactor=1.1):
             print(output)
             return jsonify(output)
             return img_copy
+
+x = detectFaces('data/haarcascade_frontalface_alt.xml', r'C:\Users\User\Desktop\depositphotos_252551228-stock-photo-happy-faces-collage.jpg')
 
 app.run(host = '0.0.0.0')
