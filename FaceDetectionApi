@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 
 @app.route("/opencamera")
-def openCamera(link:)
+def openCamera(link):
     link = 'http: // ezvizportal - 1414028875.us-east.elb.amazonaws.com/help/service/pc/login.html'
     linkCamera = ''
 
@@ -35,7 +35,7 @@ def detectFaces(arquivoTreino, imagemTreino,  scaleFactor=1.1):
         if len(faces) < 30:      #if there should be 30 students
             presNum = int(len(faces))
             presPct = presNum *100/30
-            faltnum = int(presNum - 30)
+            faltNum = int(presNum - 30)
             faltPct = faltNum *100/30
             output = {'Present students' : presNum, 'Present students %' : presPct, 'Absent students' : faltNum, 'Absent students %' : faltPct }
 
